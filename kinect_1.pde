@@ -4,11 +4,14 @@ SimpleOpenNI kinect;
 int closestValue;
 int closestX;
 int closestY;
+int lastX;
+int lastY;
 
 void setup(){
   size(640, 480);
   kinect = new SimpleOpenNI(this);
   kinect.enableDepth();
+  background(0);
 }
 
 // hogehoge
@@ -23,11 +26,11 @@ void draw() {
   for(int y = 0; y < 480; y++) {
     // 列の中のピクセルを一つ一つみていく
     for(int x = 0; x < 640; x++) {
-      // そのピクセルに対応する値を距離配列から取り出す
-      int i = x + y * 640;
+      int reversedX = 640 - x - 1;
+      int i = reversedX + y * 640;
       int currentDepthValue = depthValues[i];
 
-      if(currentDepthValue > 0 && currentDepthValue < closestValue) {
+      if(currentDepthValue > 610 && currentDepthValue < 1525 && currentDepthValue < closestValue) {
         closestValue = currentDepthValue;
         closestX = x;
         closestY = y;
@@ -35,10 +38,18 @@ void draw() {
     }
   }
 
-  PImage depthImage = kinect.depthImage();
-  image(depthImage, 0, 0);
+  float interpolatedX = lerp(lastX, closestX, 0.3f);
+  float interpolatedY = lerp(lastY, closestY, 0.3f);
+  // PImage depthImage = kinect.depthImage();
+  // image(depthImage, 0, 0);
 
-  fill(255, 0, 0);
-  ellipse(closestX, closestY, 25, 25);
+  stroke(255, 0, 0);
+  strokeWeight(3);
+  line(lastX, lastY, closestX, closestY);
+  lastX = closestX;
+  lastY = closestY;
 }
 
+void mousePressed() {
+  background(0);
+}
