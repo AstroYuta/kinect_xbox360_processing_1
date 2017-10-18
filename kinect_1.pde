@@ -19,3 +19,7 @@ void draw() {
   image(rgbImage, 640, 0);
 }
 
+void mousePressed() {
+  color c = get(mouseX, mouseY);
+  println("r: " + red(c) + " g: " + green(c) + " b; " + blue(c));
+}
